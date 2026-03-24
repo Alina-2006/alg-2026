@@ -34,7 +34,7 @@ pair<int, int> find_empty(){
 }
 
 void backtrack(int count){
-    if (count >= best) return;
+    if (count > best) return;
 
     auto [x, y] = find_empty();
     if (x == -1){
@@ -51,6 +51,8 @@ void backtrack(int count){
         return;
     }
     int max_size = min(M - x, N - y);
+    int max_allowed = min(M, N) - 1;
+    max_size = min(max_size, max_allowed);
 
     cout << "Ставим квадрат в (" << x << "," << y << "), max_size=" << max_size << ", count=" << count << endl;
     
