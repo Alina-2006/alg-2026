@@ -34,7 +34,7 @@ pair<int, int> find_empty(){
 }
 
 void backtrack(int count){
-    if (count >= best) return;
+    if (count > best) return;
 
     auto [x, y] = find_empty();
     if (x == -1){
