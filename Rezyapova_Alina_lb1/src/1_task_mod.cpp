@@ -34,7 +34,7 @@ pair<int, int> find_empty(){
 }
 
 void backtrack(int count){
-    if (count > best) return;
+    if (count >= best) return;
 
     auto [x, y] = find_empty();
     if (x == -1){
@@ -51,19 +51,20 @@ void backtrack(int count){
         return;
     }
     int max_size = min(M - x, N - y);
-    if (x == 0 && y == 0){
-        max_size = min(max_size, min(M, N) - 1);
-        cout << "Первый квадрат: max_size=" << max_size << endl;
-    }
+
     cout << "Ставим квадрат в (" << x << "," << y << "), max_size=" << max_size << ", count=" << count << endl;
     
     for (int size = max_size; size >= 1; size--){
         if (can_place(x, y, size)){
             place(x, y, size, count + 1);
             backtrack(count + 1);
+            cout << "  [ОТКАТ] удаляем size=" << size << " из (" << x << "," << y << "), возврат на уровень count=" << count << endl;
             place(x, y, size, 0);
+        } else{
+            cout << "  -> size=" << size << " не подходит" << endl;
         }
     }
+    cout << "[ВОЗВРАТ] на уровень выше из (" << x << "," << y << "), count=" << count << endl;
 }
 
 int main(){
@@ -75,7 +76,7 @@ int main(){
     }
 
     board.assign(M, vector<int>(N, 0));
-    best = M * N;
+    best = M * N + 1;
     variants = 0;
 
     backtrack(0);
