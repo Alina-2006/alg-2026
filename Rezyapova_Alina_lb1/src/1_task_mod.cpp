@@ -58,9 +58,13 @@ void backtrack(int count){
         if (can_place(x, y, size)){
             place(x, y, size, count + 1);
             backtrack(count + 1);
+            cout << "  [ОТКАТ] удаляем size=" << size << " из (" << x << "," << y << "), возврат на уровень count=" << count << endl;
             place(x, y, size, 0);
+        } else{
+            cout << "  -> size=" << size << " не подходит" << endl;
         }
     }
+    cout << "[ВОЗВРАТ] на уровень выше из (" << x << "," << y << "), count=" << count << endl;
 }
 
 int main(){
