@@ -8,14 +8,18 @@ vector<int> culc_prefix_func(const string& P){
     int m = P.length();
     vector<int> pi(m, 0);
 
+    cout << "pi[0] = 0\n";
+
     for (int i = 1; i < m; i++){
         int j = pi[i-1];
-        while (j > 0 && P[i] != P[j]){
+        while (j > 0 && P[i] != P[j]){ // попытка продолжить
+            cout << "  откат: j = pi[" << j-1 << "] = " << pi[j-1] << "\n";
             j = pi[j-1]; // откат к меньшему префиксу
         }
         if (P[i] == P[j]){ // символы совпали
             j++; // увеличение длины префикса
         }
+        cout << "pi[" << i << "] = " << pi[i] << "\n";
         pi[i] = j;
     }
     return pi;
@@ -30,6 +34,9 @@ vector<int> KMP_search(const string& P, const string& T){
     }
 
     vector<int> pi = culc_prefix_func(P);
+    cout << "\nПрефикс-функция: ";
+    for (int i = 0; i < m; i++) cout << pi[i] << " ";
+    cout << "\n";
 
     vector<int> occurrences;
     int j = 0;
@@ -41,10 +48,13 @@ vector<int> KMP_search(const string& P, const string& T){
         if (T[i] == P[j]){
             j++;
         }
+        cout << "i=" << i << " T[i]=" << T[i] << " j=" << j;
         if (j == m){ // полное вхождение(нужная строка нашлась)
             occurrences.push_back(i - m + 1); // добавляем индекс начала вхождения
+            cout << " -> нашли вхождение на позиции " << i - m + 1;
             j = pi[j-1];
         }
+        cout << "\n";
     }
     return occurrences;
 }
