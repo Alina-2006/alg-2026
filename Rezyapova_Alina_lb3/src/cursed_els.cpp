@@ -54,27 +54,53 @@ int levenshtein_cursed(const string& s, const string& t, int rep_cost, int ins_c
 
         if (can_delete(i-1)){
             curr[0] = prev[0] + del_cost;
+            cout << "curr[0] = prev[0] + del_cost = " << prev[0] << " + " << del_cost << " = " << curr[0] << " (удаление)" << endl;
         } else{
             curr[0] = INF;
+            cout << "curr[0] = INF (удалять нельзя)" << endl;
         }
 
         for (int j = 1; j <= m; j++){
+            cout << "\n  j=" << j << " (t[" << j << "]='" << t[j-1] << "'):" << endl;
             curr[j] = INF;
+
             if (can_delete(i-1)){
-                curr[j] = min(curr[j], prev[j] + del_cost);
+                int del_val = prev[j] + del_cost;
+                cout << "    удаление = prev[" << j << "] + del_cost = " << prev[j] << " + " << del_cost << " = " << del_val;
+                if (del_val < curr[j]) cout << " (лучше)";
+                cout << endl;
+                curr[j] = min(curr[j], del_val);
+            } else {
+                cout << "    удаление = нельзя" << endl;
             }
             
-            curr[j] = min(curr[j], curr[j-1] + ins_cost);
+            int ins_val = curr[j-1] + ins_cost;
+            cout << "    вставка  = curr[" << j-1 << "] + ins_cost = " << curr[j-1] << " + " << ins_cost << " = " << ins_val;
+            if (ins_val < curr[j]) cout << " (лучше)";
+            cout << endl;
+            curr[j] = min(curr[j], ins_val);
             
             if (can_replace(i-1)){
-                int rep = prev[j-1] + (s[i-1] != t[j-1] ? rep_cost : 0);
-                curr[j] = min(curr[j], rep);
+                int rep_val = prev[j-1] + (s[i-1] != t[j-1] ? rep_cost : 0);
+                cout << "    замена   = prev[" << j-1 << "] + " << (s[i-1] != t[j-1] ? rep_cost : 0) << " = " << prev[j-1] << " + " << (s[i-1] != t[j-1] ? rep_cost : 0) << " = " << rep_val;
+                if (rep_val < curr[j]) cout << " (лучше)";
+                cout << endl;
+                curr[j] = min(curr[j], rep_val);
             }
-
             else if (s[i-1] == t[j-1]){
-                curr[j] = min(curr[j], prev[j-1]); // если замена запрещена, но символы совпали
+                int match_val = prev[j-1];
+                cout << "    совпадение (замена запрещена) = prev[" << j-1 << "] = " << match_val;
+                if (match_val < curr[j]) cout << " (лучше)";
+                cout << endl;
+                curr[j] = min(curr[j], match_val);
             }
+            else {
+                cout << "    замена = нельзя (символы разные, замена запрещена)" << endl;
+            }
+            
+            cout << "    -> минимум = " << curr[j] << endl;
         }
+
         ss << "i=" << i << "(" << s[i-1] << ") ";
         for (int j = 0; j <= m; j++) {
             if (curr[j] >= INF/2) ss << "   ∞";
@@ -82,8 +108,12 @@ int levenshtein_cursed(const string& s, const string& t, int rep_cost, int ins_c
         }
         table_lines.push_back(ss.str());
         ss.str("");
+
+        cout << "\n>>> Строка таблицы: " << table_lines.back() << endl;
+
         swap(prev, curr);
     }
+
     if (prev[m] >= INF){
         return -1; // ситуации, когда нельзя ни заменить, ни удалить
     }
@@ -115,7 +145,7 @@ int main(){
     if (result == -1){
         cout << "Impossible" << endl; 
     } else{
-        cout << result << endl;
+        cout << "Ответ: " << result << endl;
     }
 
     return 0;
